@@ -1,14 +1,30 @@
-from fastapi import FastAPI 
-from schemas.query import Query
+from fastapi import FastAPI, Request, Depends
+from contextlib import asynccontextmanager
+from schemas.query import PlannerQuery
+from agents.iteration1 import EventPlanner_Iteration1
 
 
-app = FastAPI()
+def get_event_planner(request: Request) -> EventPlanner_Iteration1:
+    return request.app.state.event_planner
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("Starting up...") 
+    event_planner = EventPlanner_Iteration1()
+    event_planner.initialize()
+    app.state.event_planner = event_planner
+    yield
+    print("Shutting down...")
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/")
 def root():
     return {"message": "Hello World"}
 
 @app.post("/planner")
-def planner(request: Query):
-    print(request.query)
-    return {"message": "Hello World"}
+def planner(request: PlannerQuery, event_planner: EventPlanner_Iteration1 = Depends(get_event_planner)):
+
+    response = event_planner.process_message(request.query)
+    return {"response": response}
