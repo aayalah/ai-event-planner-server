@@ -1,3 +1,5 @@
+import os
+import json
 from langchain.chat_models import init_chat_model
 from typing import Dict, List, Optional, TypedDict
 from langgraph.prebuilt import ToolNode, create_react_agent, tools_condition
@@ -6,8 +8,7 @@ from langgraph.graph import StateGraph, START, END, MessagesState
 from google.maps import places_v1
 from google.type import latlng_pb2
 from langchain.tools import tool  
-import os
-import json
+
 
 class State(MessagesState):
 
@@ -60,13 +61,12 @@ class EventPlanner_Iteration2:
                     places_v1.types.PRICE_LEVEL_EXPENSIVE
                 ]
             )
-            fieldMask = "places.formattedAddress,places.displayName"
+            fieldMask = "places.formattedAddress,places.displayName,places.priceLevel,places.priceRange,places.rating,places.nationalPhoneNumber"
 
             response = await self.placesAPI.search_text(request=request, metadata=[("x-goog-fieldmask",fieldMask)])
-
-            print(response)                     
-            return ""
-
+            json_string = json.dumps(response, indent=2)
+            print(json_string)                     
+            return {"messages": [json_string]}
 
         @tool
         def get_web_search_results(query: str) -> str:
