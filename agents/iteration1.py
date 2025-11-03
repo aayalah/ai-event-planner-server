@@ -1,12 +1,10 @@
 from langchain.chat_models import init_chat_model
 from typing import Dict, List, Optional, TypedDict
 from pydantic import BaseModel, Field
-from langgraph.graph import StateGraph, START, END
+from langgraph.graph import StateGraph, MessagesState, START, END
 
 
-class State(TypedDict):
-    query: str
-    response: str
+class State(MessagesState):
 
 class PlannerResponse(BaseModel):
     plan: str = Field(description="The plan for the event")
@@ -21,7 +19,8 @@ class EventPlanner_Iteration1(BaseModel):
 
 
         chain = prompts["event_planner"] | self.llm.with_structured_output(PlannerResponse)
-        return {"response": "Plan created"}
+        response = chain.invoke()
+        return {"messages": [response.plan]}
 
 
     def initialize(self):
@@ -34,5 +33,5 @@ class EventPlanner_Iteration1(BaseModel):
         self.graph = graph_builder.compile()
         
     def process_message(self, message: str, chat_history: Optional[List[Dict[str, str]]] = None) -> str:
-        response = self.graph.invoke({"query": message})
-        return response["response"]
+        response = self.graph.invoke({"messages": [message]})
+        return response["messages"][-1].content
