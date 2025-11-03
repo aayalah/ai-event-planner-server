@@ -9,7 +9,7 @@ class State(MessagesState):
 class PlannerResponse(BaseModel):
     plan: str = Field(description="The plan for the event")
 
-class EventPlanner_Iteration1(BaseModel):
+class EventPlanner_Iteration1:
 
     def __init__(self):
         self.llm = None
@@ -19,7 +19,7 @@ class EventPlanner_Iteration1(BaseModel):
 
 
         chain = prompts["event_planner"] | self.llm.with_structured_output(PlannerResponse)
-        response = chain.invoke()
+        response = chain.invoke({"input": state["messages"]})
         return {"messages": [response.plan]}
 
 
