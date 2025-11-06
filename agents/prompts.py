@@ -1,7 +1,9 @@
+from langchain_core.prompts import ChatPromptTemplate
+
 
 prompts = {
-    "event_planner": """
-        Developer: Role and Objective:
+    "event_planner": ChatPromptTemplate.from_template("""
+       Role and Objective:
         - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
 
         Instructions:
@@ -17,25 +19,24 @@ prompts = {
         ### User Preferences
         - Event type (string)
         - Number of people (integer)
-        - Vendors needed (list of strings)
-        - Dates (list of strings or date objects)
+        - Vendors needed (string)
+        - Dates (string)
         - Location (string)
         - Budget (number)
-        - Preferences for each person (list of objects)
 
         ### Attendees Preferences
-        - Names (list of strings)
-        - Allergies/requirements (list of strings or objects)
-        - Availability (list of strings or date objects)
+        - Names (string)
+        - Allergies/requirements (string)
+        - Availability (string)
 
         ### Venues
-        - Potential venues (list of objects)
+        - Potential venues (string)
 
         ### Catering
-        - Potential caterers (list of objects)
+        - Potential caterers (string)
 
         ### Entertainment Options
-        - Potential entertainment vendors (list of objects)
+        - Potential entertainment vendors (string)
 
         Output Format:
         - Return the event planning steps as a Markdown bullet-point list, ordered sequentially.
@@ -60,6 +61,8 @@ prompts = {
             - Top entertainment choices:
                 - Band Z: available on selected date
         ```
+        Do not output the content above in the response just use it as the format for the overall response.                                                
+
 
         - If no options are suitable for venues, catering, or entertainment, specify: "No suitable [category] options found based on the provided preferences."
         - If input data is incomplete, append a cautionary note (e.g., "Some attendee availability data missing; recommend collecting this information before finalizing the event.").
@@ -71,5 +74,103 @@ prompts = {
         - Analyze all provided inputs, systematize stepwise planning, and prioritize matches as instructed.
         - After each critical selection (venue, catering, entertainment), briefly validate the suitability of options and note any gaps or issues before proceeding to the subsequent step.
         - Validate data completeness and suitability throughout preparation; if success criteria are unmet, clearly state the need for more information or propose alternatives.
-    """
+        
+        Event Details: {event_details}
+    """),
+    "event_profile_parsing": ChatPromptTemplate.from_template("""
+       Role and Objective:
+        - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
+
+       Extract the the details of event from the users messages. Only use the users messages to extract the event details.
+       For dates convert the to calendar dates.                                                       
+
+       Output the event details as json in this format:
+        - event_type: str -> The type of event
+        - formality: str -> Formality of event one of (casual, semi-forma, formal)
+        - location: str -> The city the event will occur in
+        - dates: list[str] -> The list of potential dates for the event: Format: MM/DD/YY
+        - the budget: int -> the maximum budget of the event                                                      
+        - attendee_count: int -> The number of attendees  
+
+        User requirements: {user_requirements}                                                                                                                 
+    """),
+    "theme_suggestions": ChatPromptTemplate.from_template("""
+       Role and Objective:
+        - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
+
+       Given the profile of the event suggest three themes that could fit. Take into account:
+        - the formality of the event
+        - whether the party is for adults or for children
+        - the location of the event
+
+       Only stick to discussions of the theme do not deviate to other parts of event planning.                                               
+
+       Output:
+        - Return a numbered list of themes
+        - For each theme include an explanation of why it fits, ideas for venues, budget priorities
+        
+                                                          
+       Event Profile: {event_profile}
+       Messages: {messages}                                                                                                 
+    """),
+    "concept_suggestions": ChatPromptTemplate.from_template("""
+       Role and Objective:
+        - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
+
+       Given the profile of the event suggest 6 concepts/themes that could fit. Take into account:
+        - the formality of the event
+        - whether the party is for adults or for children
+        - the location of the event
+        - min/max budget
+        - the number of attendees
+        - must haves
+        - nice to haves
+        - things to avoid                                                                                                                                                                                                                
+
+       Only returns a list of concepts/themes.                                          
+
+       Output only in a json list format. Each item in the list will have:
+        - name - string - the name of the theme/concept
+        - description - string - the description of the theme/concept
+        - location ideas - list of strings - a list of ideas for the location ex: (beach, park, etc.)
+                                                            
+       Messages: {messages}                                                                                                 
+    """),
+    "vendor_suggestions": ChatPromptTemplate.from_template("""
+       Role and Objective:
+        - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
+
+       Given the profile of the event suggest three price categories of venues and vendors (low, medium, premium). For each price category choose a 4-5 vendors and venues that fit the event. Ensure that there are
+       always venues included. For the vendors come up with a set of categories of vendors that fit the event and include the examples of each category in the three price categories.
+                                                           
+        Take into account:
+            - the formality of the event
+            - whether the party is for adults or for children
+            - the location of the event
+            - min/max budget
+            - the number of attendees
+            - must haves
+            - nice to haves
+            - things to avoid 
+            - the concept of the event                                                                                                                                                                                                                                                                  
+
+       Only returns a list of vendors/venues. Ensure that for each vendor category and venue category there are exactly three options for each of the price categories.                                        
+
+       Output only in a json list format. Each item in the list will have:
+        - name - string - the name of the vendor/venue
+        - category - string - the type of vendor (ex: venue, catering, photography, etc.)
+        - service - string - the service provided by the venue/vendor
+        - price - float - the price in dollars of the venue/vendor
+        - email - string - the email of the venue/vendor
+                                                            
+       Messages: {messages}                                                                                                 
+    """),
+    "theme_interpreter": ChatPromptTemplate.from_template("""
+        Given the user's messages determine if they have chosen a theme.
+                                                          
+        Ouput: Return json in this format:
+            - theme - string -> The theme the user chose. If no theme was chosen leave it empty 
+
+        Messages: {messages}                                
+    """)
 }

@@ -1,0 +1,10 @@
+vendor_id,name,category,price_tier,price,address,email,availability_dates
+V001,Venue Low Vendor 1,venue,low,219,"902 Market St, San Francisco, CA",vendor1@example.com,2025-11-07;2025-11-14;2025-11-19
+V002,Venue Medium Vendor 2,venue,medium,490,"719 Market St, San Francisco, CA",vendor2@example.com,2025-11-08;2025-11-11;2025-11-14;2025-11-18
+V003,Venue Premium Vendor 3,venue,premium,735,"622 Market St, San Francisco, CA",vendor3@example.com,2025-11-06;2025-11-07;2025-11-10;2025-11-16;2025-11-17
+V004,Catering Low Vendor 4,catering,low,259,"867 Market St, San Francisco, CA",vendor4@example.com,2025-11-06;2025-11-12;2025-11-17
+V005,Catering Medium Vendor 5,catering,medium,394,"779 Market St, San Francisco, CA",vendor5@example.com,2025-11-06;2025-11-07;2025-11-09;2025-11-11;2025-11-15
+V006,Catering Premium Vendor 6,catering,premium,783,"852 Market St, San Francisco, CA",vendor6@example.com,2025-11-06;2025-11-10;2025-11-13;2025-11-16
+V007,Entertainment Low Vendor 7,entertainment,low,231,"848 Market St, San Francisco, CA",vendor7@example.com,2025-11-08;2025-11-09;2025-11-11;2025-11-12;2025-11-18
+V008,Entertainment Medium Vendor 8,entertainment,medium,369,"180 Market St, San Francisco, CA",vendor8@example.com,2025-11-07;2025-11-11;2025-11-13;2025-11-17;2025-11-19
+V009,Entertainment Premium Vendor 9,entertainment,premium,706,"231 Market St, San Francisco, CA",vendor9@example.com,2025-11-06;2025-11-11;2025-11-12

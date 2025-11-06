@@ -1,0 +1,11 @@
+guest_id,full_name,email,availability,preferences_allergies,other_requirements
+G001,Alex Smith,alex@example.com,2025-11-06 18:00-21:00;2025-11-10 19:00-22:00;2025-11-17 19:00-22:00,shellfish,wheelchair access
+G002,Jamie Smith,jamie@example.com,2025-11-16 19:00-22:00;2025-11-13 19:00-22:00;2025-11-14 18:00-21:00,peanuts,needs parking
+G003,Taylor Smith,taylor@example.com,2025-11-18 19:00-22:00;2025-11-13 18:00-21:00,peanuts,service animal access
+G004,Jordan Smith,jordan@example.com,2025-11-12 19:00-22:00;2025-11-19 18:00-21:00,vegetarian,needs parking
+G005,Morgan Smith,morgan@example.com,2025-11-10 18:00-21:00;2025-11-18 19:00-22:00,vegetarian,none
+G006,Riley Smith,riley@example.com,2025-11-12 19:00-22:00;2025-11-13 18:00-21:00,vegan,wheelchair access
+G007,Casey Smith,casey@example.com,2025-11-18 18:00-21:00;2025-11-16 18:00-21:00,gluten-free,wheelchair access
+G008,Quinn Smith,quinn@example.com,2025-11-07 19:00-22:00;2025-11-15 18:00-21:00;2025-11-11 18:00-21:00,vegan,wheelchair access
+G009,Avery Smith,avery@example.com,2025-11-17 18:00-21:00;2025-11-16 18:00-21:00;2025-11-17 18:00-21:00,none,wheelchair access
+G010,Drew Smith,drew@example.com,2025-11-10 19:00-22:00;2025-11-07 19:00-22:00,peanuts,wheelchair access
