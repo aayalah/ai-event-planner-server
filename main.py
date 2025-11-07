@@ -92,7 +92,7 @@ async def concepts(user_id: str, payload: ConceptsPayload, concepts: Concepts= D
 
 
 @app.post("/vendors", response_model=List[Vendor])
-async def concepts(user_id: str, payload: VendorPayload, vendors: Vendors= Depends(get_vendors)):
+async def vendors(user_id: str, payload: VendorPayload, vendors: Vendors= Depends(get_vendors)):
     
     json_str = payload.json()
 
@@ -100,9 +100,9 @@ async def concepts(user_id: str, payload: VendorPayload, vendors: Vendors= Depen
 
     data = json.loads(response)  
     
-    concepts = [Vendor.model_validate(item) for item in data["vendors"]]
+    vendors = [Vendor.model_validate(item) for item in data["vendors"]]
 
-    return concepts
+    return vendors
 
 
 # async def get_file_data(file: UploadFile) -> str:

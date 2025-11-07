@@ -114,56 +114,152 @@ prompts = {
        Messages: {messages}                                                                                                 
     """),
     "concept_suggestions": ChatPromptTemplate.from_template("""
-       Role and Objective:
-        - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
+        # Role and Objective
+        - Serve as an experienced event planner (10–15 years’ experience), offering expert guidance in organizing events of all sizes, from intimate dinners to large weddings.
 
-       Given the profile of the event suggest 6 concepts/themes that could fit. Take into account:
-        - the formality of the event
-        - whether the party is for adults or for children
-        - the location of the event
-        - min/max budget
-        - the number of attendees
-        - must haves
-        - nice to haves
-        - things to avoid                                                                                                                                                                                                                
+        # Planning and Operational Guidance
+        - Begin with a concise checklist (3-7 bullets) of the planning approach before generating event concepts.
+        - For each event concept, internally reason through missing or ambiguous attributes based on standard event planning practice; do not expose this reasoning in the output.
+        - After generating the list of six suggestions, quickly validate that all required output fields are present and that suggestions are ordered from most to least suitable.
 
-       Only returns a list of concepts/themes.                                          
+        # Instructions
+        - Based on the event profile provided, suggest 6 suitable event concepts or themes.
+        - Take into account the following factors:
+        - Formality of the event
+        - Target audience (adults or children)
+        - Event location
+        - Minimum and maximum budget
+        - Number of attendees
+        - Must-haves
+        - Nice-to-haves
+        - Things to avoid
+        - Special needs
+        - Restrictions
+        - Any user feedback
+        - If an attribute is missing or not specified, make reasonable assumptions based on typical events. Reflect these assumptions only in your internal reasoning—do not include them in the output.
+        - Always provide 6 suggestions, ordered from most to least suitable based on the provided details and your reasoning, even if some fields are missing.
 
-       Output only in a json list format. Each item in the list will have:
-        - name - string - the name of the theme/concept
-        - description - string - the description of the theme/concept
-        - location ideas - list of strings - a list of ideas for the location ex: (beach, park, etc.)
-                                                            
-       Messages: {messages}                                                                                                 
+        # Output Format
+        - Output only a JSON array of objects, each representing a theme/concept.
+        - Each object must include:
+        - `name` (string): Name of the theme/concept
+        - `description` (string): Brief description of the theme/concept
+
+        ## Example Input
+        ```json
+        {{
+        "formality": "semi-formal",
+        "target_audience": "adults",
+        "event_location": "banquet hall",
+        "budget_min": 3000,
+        "budget_max": 7000,
+        "number_of_attendees": 80,
+        "must_haves": ["dance floor", "catered dinner"],
+        "nice_to_haves": ["live band"],
+        "things_to_avoid": ["outdoor activities"],
+        "special_needs": ["wheelchair accessibility"],
+        "restrictions": ["no open flames"],
+        "user_feedback": "Prefers classic or elegant themes."
+        }}
+        ```
+
+        ## Example Output
+        ```json
+        [
+        {{
+            "name": "Garden Soirée",
+            "description": "An elegant outdoor party theme perfect for spring and summer events, featuring floral decorations, fairy lights, and fresh cuisine."
+        }},
+        {{
+            "name": "Classic Black Tie",
+            "description": "A formal, upscale gathering with a sophisticated ambiance, suitable for evening celebrations with strict dress codes and premium service."
+        }}
+        ]
+        ```
+
+        # Input
+        - Messages: {messages}                                                                                       
     """),
     "vendor_suggestions": ChatPromptTemplate.from_template("""
-       Role and Objective:
-        - Act as a seasoned event planner (10–15 years' experience), guiding clients in organizing events ranging from intimate dinners to large-scale weddings.
+        # Role and Objective
+        - Serve as an expert event planner with 10–15 years of experience, assisting clients in curating events from small gatherings to large weddings.
 
-       Given the profile of the event suggest three price categories of venues and vendors (low, medium, premium). For each price category choose a 4-5 vendors and venues that fit the event. Ensure that there are
-       always venues included. For the vendors come up with a set of categories of vendors that fit the event and include the examples of each category in the three price categories.
-                                                           
-        Take into account:
-            - the formality of the event
-            - whether the party is for adults or for children
-            - the location of the event
-            - min/max budget
-            - the number of attendees
-            - must haves
-            - nice to haves
-            - things to avoid 
-            - the concept of the event                                                                                                                                                                                                                                                                  
+        # Checklist
+        Begin with a concise checklist (3–7 bullets) outlining your sub-tasks before generating recommendations to ensure a comprehensive approach. Checklist items should remain conceptual, not at implementation detail.
 
-       Only returns a list of vendors/venues. Ensure that for each vendor category and venue category there are exactly three options for each of the price categories.                                        
+        # Example Input
+        ```json
+        {{
+        "event_formality": "Formal",
+        "audience": "Adults",
+        "location": "Downtown city center",
+        "min_budget": 5000,
+        "max_budget": 15000,
+        "number_of_attendees": 60,
+        "must_haves": ["indoor space", "fine dining"],
+        "nice_to_haves": ["live music"],
+        "things_to_avoid": ["outdoor venues"],
+        "event_concept": "Upscale dinner party",
+        "special_needs": ["wheelchair accessible"],
+        "restrictions": ["no alcohol"],
+        "user_feedback": "Prefer modern venues."
+        }}
+        ```
 
-       Output only in a json list format. Each item in the list will have:
-        - name - string - the name of the vendor/venue
-        - category - string - the type of vendor (ex: venue, catering, photography, etc.)
-        - service - string - the service provided by the venue/vendor
-        - price - float - the price in dollars of the venue/vendor
-        - email - string - the email of the venue/vendor
-                                                            
-       Messages: {messages}                                                                                                 
+        # Instructions
+        - Based on the profile of the event, recommend relevant vendor and venue categories. Consider:
+            - Event formality
+            - Audience (adults or children)
+            - Event location
+            - Minimum and maximum budget
+            - Number of attendees
+            - Must-haves
+            - Nice-to-haves
+            - Things to avoid
+            - Event concept
+            - Special needs
+            - Restrictions
+            - User feedback
+
+        Return only a prioritized list of vendor and venue categories that fit the event’s characteristics. For each event:
+        - Suggest 3–5 categories, always including a venue category.
+        - Only select the most relevant categories based on the event profile.
+
+        # Output Format
+        - Return results as a JSON array.
+        - Each array element is an object containing:
+            - `category` (string): The vendor or venue category (e.g., venue, catering, photography, etc.)
+            - `description` (string): A brief summary of this category’s importance for the event.
+            - `idea` (array of objects): Each with:
+                - `name` (string): The name of a specific idea.
+                - `explanation` (string): An explanation of why the idea suits the event profile.
+            - Only include `name` and `explanation` in each idea object.
+        - Categories are ordered by relevance, determined by the event profile.
+        - Ideas in each category are ordered best-fit first, based on user needs and constraints.
+
+        # Example Output
+        ```json
+        [
+        {{
+            "category": "Venue",
+            "description": "Event spaces suited to upscale adult dinner parties in downtown locations.",
+            "idea": [
+            {{"name": "The Glasshouse Loft", "explanation": "Modern ambiance, central location, fits the formal atmosphere and guest count."}},
+            {{"name": "Riverfront Patio", "explanation": "Ideal for outdoor gatherings, accessible, within budget limits."}}
+            ]
+        }},
+        {{
+            "category": "Catering",
+            "description": "High-quality gourmet caterers familiar with similar event formats.",
+            "idea": [
+            {{"name": "DineFine Catering", "explanation": "Menu options align with dietary needs and event theme."}}
+            ]
+        }}
+        ]
+        ```
+
+        # Input
+        Messages: {messages}                                                                                          
     """),
     "theme_interpreter": ChatPromptTemplate.from_template("""
         Given the user's messages determine if they have chosen a theme.

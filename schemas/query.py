@@ -19,24 +19,29 @@ class EventProfile(BaseModel):
     must_haves: List[str]
     nice_to_haves: List[str]
     things_to_avoid: List[str]
-    concept: str
+    special_needs: str
+    restrictions: str
+    concept: Optional[str] = ""
 
 class ConceptsPayload(BaseModel):
     event_ideas: str
     event_profile: EventProfile
+    user_feedback: Optional[str] = ""
 
 class Concept(BaseModel):
     name: str
     description: str
-    location_ideas: str
 
 class VendorPayload(BaseModel):
     event_profile: EventProfile
+    user_feedback: Optional[str] = ""
 
+
+class Ideas(BaseModel):
+    name: str
+    explanation: str
 
 class Vendor(BaseModel):
-    name: str
     category: str
-    service: str
-    price: float
-    email: str
+    description: str
+    ideas: List[Ideas]
